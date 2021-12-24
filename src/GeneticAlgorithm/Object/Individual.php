@@ -9,8 +9,6 @@ class Individual
     /**
      * Create new individual
      * @param $countChromosomes int
-     * @param $minValue int
-     * @param $maxValue int
      */
     public function __construct($countChromosomes)
     {

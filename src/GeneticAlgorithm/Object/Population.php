@@ -16,4 +16,9 @@ class Population
             array_push($this->individuals, $individual);
         }
     }
+
+    public function getIndividuals()
+    {
+        return $this->individuals;
+    }
 }
