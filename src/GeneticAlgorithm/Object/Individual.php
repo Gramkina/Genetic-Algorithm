@@ -1,6 +1,6 @@
 <?php
 
-namespace Gramk\GeneticAlgorithm\Population;
+namespace Gramk\GeneticAlgorithm\Object;
 
 class Individual
 {
@@ -12,11 +12,16 @@ class Individual
      * @param $minValue int
      * @param $maxValue int
      */
-    public function __construct($countChromosomes, $minValue, $maxValue)
+    public function __construct($countChromosomes)
     {
         for ($i = 0; $i < $countChromosomes; $i++) {
-            $chromosome = rand($minValue, $maxValue);
+            $chromosome = rand()/getrandmax();
             array_push($this->chromosomes, $chromosome);
         }
+    }
+
+    public function getChromosomes()
+    {
+        return $this->chromosomes;
     }
 }
