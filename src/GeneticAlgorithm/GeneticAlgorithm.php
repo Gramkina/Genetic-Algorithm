@@ -11,34 +11,28 @@ class GeneticAlgorithm
      *
      * @var Population
      */
-    private $population;
+    protected $population;
 
     /**
-     * Count individual chromosomes
+     * Parameters
      *
-     * @var int
+     * @var array
      */
-    private $countIndividualChromosomes;
+    protected $options;
 
     /**
-     * Count population individual
+     * Set parameters genetic algorithm
      *
-     * @var int
+     * @param $options array
+     * @throws \Exception
      */
-    private $countPopulationIndividual;
-
-    /**
-     * GeneticAlgorithm constructor.
-     * @param $countPopulationIndividual int
-     * @param $countIndividualChromosomes int
-     */
-    public function __construct($countPopulationIndividual, $countIndividualChromosomes)
+    public function setParameters($options)
     {
-        $this->population = new Population($countPopulationIndividual, $countIndividualChromosomes);
-    }
-
-    public function setParameters()
-    {
+        if ($options['count_chromosomes'] && $options['count_population'] && $options['arguments'] && $options['condition']) {
+            $this->options = $options;
+        } else {
+            throw new \Exception();
+        }
 
     }
 
