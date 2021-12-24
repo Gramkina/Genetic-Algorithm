@@ -4,6 +4,13 @@ namespace Gramk\GeneticAlgorithm\Object;
 
 class Individual
 {
+    /**
+     * Fitness
+     *
+     * @var int
+     */
+    public $fitness;
+
     protected $chromosomes = [];
 
     /**
@@ -21,5 +28,21 @@ class Individual
     public function getChromosomes()
     {
         return $this->chromosomes;
+    }
+
+    /**
+     * Set fitness
+     *
+     * @param $fitness float
+     * @return void
+     */
+    public function setFitness($fitness)
+    {
+        $this->fitness = $fitness;
+    }
+
+    public function getFitness()
+    {
+        return $this->fitness;
     }
 }
