@@ -70,10 +70,10 @@ class Population
     public function sortByFitness()
     {
         usort($this->individuals, function ($a, $b) {
-            if ($a->fitness == $b->fitness) {
+            if ($a->getFitness() == $b->getFitness()) {
                 return 0;
             }
-            return ($a->fitness < $b->fitness) ? -1 : 1;
+            return ($a->getFitness() < $b->getFitness()) ? -1 : 1;
         });
     }
 
