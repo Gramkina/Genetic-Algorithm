@@ -28,6 +28,7 @@ class Individual
     /**
      * Create new individual
      *
+     * @param $autoGenerate bool
      * @param $countChromosomes int
      */
     public function __construct($countChromosomes, $autoGenerate=null)
@@ -52,9 +53,16 @@ class Individual
         return true;
     }
 
-    public function setChromosomes()
+    /**
+     * Set array of chromosomes
+     *
+     * @param $arrayChromosomes float[]
+     * @return bool
+     */
+    public function setChromosomes($arrayChromosomes)
     {
-
+        $this->chromosomes = $arrayChromosomes;
+        return true;
     }
 
     /**
