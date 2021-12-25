@@ -2,6 +2,7 @@
 
 namespace Gramk\GeneticAlgorithm;
 
+use Exception;
 use Gramk\GeneticAlgorithm\Object\Individual;
 use Gramk\GeneticAlgorithm\Object\Population;
 
@@ -9,30 +10,25 @@ class GeneticAlgorithm
 {
     /**
      * Population
-     *
-     * @var Population
      */
-    protected $population;
+    protected Population $population;
 
     /**
      * Parameters
-     *
-     * @var array
      */
-    protected $options;
+    protected array $options;
 
     /**
      * Set parameters genetic algorithm
      *
-     * @param $options array
-     * @throws \Exception
+     * @throws Exception
      */
-    public function setParameters($options)
+    public function setParameters(array $options)
     {
-        if ($options['count_chromosomes'] && $options['count_population'] && $options['arguments'] && $options['condition'] && $options['count_selection']) {
+        if ($options['count_chromosomes'] && $options['count_population'] && $options['arguments'] && $options['condition'] && $options['count_mutation']) {
             $this->options = $options;
         } else {
-            throw new \Exception();
+            throw new Exception();
         }
 
     }
@@ -47,7 +43,8 @@ class GeneticAlgorithm
 
         $this->fitness();
         $this->population->sortByFitness();
-        return $this->selection();
+        $this->selection();
+        $this->mutation();
 
     }
 
@@ -72,12 +69,15 @@ class GeneticAlgorithm
         }
     }
 
+    /**
+     * Selection
+     */
     private function selection()
     {
-        $indForSel = array_slice($this->population->getIndividuals(), 0, $this->options['count_selection']);
+        $indForSel = array_slice($this->population->getIndividuals(), 0, $this->options['count_population']);
         $newPopulation = new Population($this->options['count_population'], $this->options['count_chromosomes']);
         $newIndividuals = [];
-        for ($i = 0; $i < $this->options['count_selection']; $i++) {
+        for ($i = 0; $i < $this->options['count_population']; $i++) {
             $newIndividuals[$i] = new Individual($this->options['count_chromosomes']);
             $parentIndividual = array_rand($indForSel, 2);
             $countFirstChromosomes = rand(1, $this->options['count_chromosomes']-1);
@@ -88,5 +88,21 @@ class GeneticAlgorithm
             $newIndividuals[$i]->setChromosomes($arrayChromosomes);
         }
         $newPopulation->setIndividuals($newIndividuals);
+        $this->population = $newPopulation;
+    }
+
+    /**
+     * Mutation
+     */
+    private function mutation(): bool
+    {
+        for ($i = 0; $i < $this->options['count_mutation']; $i++) {
+            $randomIndividual = rand(0, $this->options['count_population']-1);
+            $randomChromosome = rand(0, $this->options['count_chromosomes']-1);
+            $arrayChromosomes = $this->population->getIndividuals()[$randomIndividual]->getChromosomes();
+            $arrayChromosomes[$randomChromosome] = Individual::generateChromosome();
+            $this->population->getIndividuals()[$randomIndividual]->setChromosomes($arrayChromosomes);
+        }
+        return true;
     }
 }
