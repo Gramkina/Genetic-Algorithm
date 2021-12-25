@@ -2,6 +2,7 @@
 
 namespace Gramk\GeneticAlgorithm;
 
+use Gramk\GeneticAlgorithm\Object\Individual;
 use Gramk\GeneticAlgorithm\Object\Population;
 
 class GeneticAlgorithm
@@ -42,20 +43,20 @@ class GeneticAlgorithm
     public function run()
     {
         // Generate new population
-        $this->population = new Population($this->options['count_population'], $this->options['count_chromosomes']);
+        $this->population = new Population($this->options['count_population'], $this->options['count_chromosomes'], true);
 
-        $this->fitness($this->population);
+        $this->fitness();
         $this->population->sortByFitness();
-        return $this->population->getIndividuals();
+        return $this->selection();
 
     }
 
     /**
      * Check chromosomes on condition
      *
-     * @param $population Population
+     * @return void
      */
-    private function fitness($population)
+    private function fitness()
     {
         $coff = 0;
         foreach ($this->population->getIndividuals() as $individual) {
@@ -73,6 +74,19 @@ class GeneticAlgorithm
 
     private function selection()
     {
-
+        $indForSel = array_slice($this->population->getIndividuals(), 0, $this->options['count_selection']);
+        $newPopulation = new Population($this->options['count_population'], $this->options['count_chromosomes']);
+        $newIndividuals = [];
+        for ($i = 0; $i < $this->options['count_selection']; $i++) {
+            $newIndividuals[$i] = new Individual($this->options['count_chromosomes']);
+            $parentIndividual = array_rand($indForSel, 2);
+            $countFirstChromosomes = rand(1, $this->options['count_chromosomes']-1);
+            $arrayChromosomes = [];
+            for ($j = 0; $j < $this->options['count_chromosomes']; $j++) {
+                $arrayChromosomes[] = $indForSel[$parentIndividual[($j < $countFirstChromosomes ? 0 : 1)]]->getChromosomes()[$j];
+            }
+            $newIndividuals[$i]->setChromosomes($arrayChromosomes);
+        }
+        $newPopulation->setIndividuals($newIndividuals);
     }
 }
