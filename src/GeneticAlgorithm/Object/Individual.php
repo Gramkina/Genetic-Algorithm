@@ -9,22 +9,59 @@ class Individual
      *
      * @var int
      */
-    public $fitness;
+    protected $fitness;
 
+    /**
+     * Array of chromosomes
+     *
+     * @var float[]
+     */
     protected $chromosomes = [];
 
     /**
+     * Count chromosomes
+     *
+     * @var int
+     */
+    protected $countChromosomes;
+
+    /**
      * Create new individual
+     *
      * @param $countChromosomes int
      */
-    public function __construct($countChromosomes)
+    public function __construct($countChromosomes, $autoGenerate=null)
     {
-        for ($i = 0; $i < $countChromosomes; $i++) {
-            $chromosome = rand()/getrandmax();
-            array_push($this->chromosomes, $chromosome);
+        $this->countChromosomes = $countChromosomes;
+        if ($autoGenerate) {
+            $this->generateChromosomes();
         }
     }
 
+    /**
+     * Method for auto generate chromosomes individual
+     *
+     * @return bool
+     */
+    public function generateChromosomes()
+    {
+        for ($i = 0; $i < $this->countChromosomes; $i++) {
+            $chromosome = rand()/getrandmax();
+            $this->chromosomes[] = $chromosome;
+        }
+        return true;
+    }
+
+    public function setChromosomes()
+    {
+
+    }
+
+    /**
+     * Get individual chromosomes
+     *
+     * @return float[]
+     */
     public function getChromosomes()
     {
         return $this->chromosomes;
@@ -34,13 +71,19 @@ class Individual
      * Set fitness
      *
      * @param $fitness float
-     * @return void
+     * @return bool
      */
     public function setFitness($fitness)
     {
         $this->fitness = $fitness;
+        return true;
     }
 
+    /**
+     * Get fitness
+     *
+     * @return float
+     */
     public function getFitness()
     {
         return $this->fitness;
