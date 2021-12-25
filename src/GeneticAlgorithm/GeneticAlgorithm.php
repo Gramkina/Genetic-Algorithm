@@ -25,7 +25,13 @@ class GeneticAlgorithm
      */
     public function setParameters(array $options)
     {
-        if ($options['count_chromosomes'] && $options['count_population'] && $options['arguments'] && $options['condition'] && $options['count_mutation']) {
+        if ($options['count_chromosomes'] &&
+            $options['count_population'] &&
+            $options['arguments'] &&
+            $options['condition'] &&
+            $options['count_mutation'] &&
+            $options['generations'] &&
+            $options['count_selection']) {
             $this->options = $options;
         } else {
             throw new Exception();
@@ -36,24 +42,37 @@ class GeneticAlgorithm
     /**
      * Start genetic algorithm
      */
-    public function run()
+    public function run(): float
     {
         // Generate new population
         $this->population = new Population($this->options['count_population'], $this->options['count_chromosomes'], true);
 
+        // Counter generation
+        $currentGeneration = 0;
+
+        // Main cycle
+        while ($currentGeneration++ < $this->options['generations']) {
+            $this->fitness();
+            $this->population->sortByFitness();
+            $this->population = $this->selection();
+            $this->population = $this->mutation();
+        }
+
+        // Result
         $this->fitness();
         $this->population->sortByFitness();
-        $this->selection();
-        $this->mutation();
-
+        $chromosomes = $this->population->getIndividuals()[0]->getChromosomes();
+        $result = 0;
+        for ($i = 0; $i < $this->options['count_chromosomes']; $i++) {
+            $result += $chromosomes[$i] * $this->options['arguments'][$i];
+        }
+        return $result;
     }
 
     /**
      * Check chromosomes on condition
-     *
-     * @return void
      */
-    private function fitness()
+    private function fitness(): void
     {
         $coff = 0;
         foreach ($this->population->getIndividuals() as $individual) {
@@ -61,6 +80,7 @@ class GeneticAlgorithm
             for ($i = 0; $i < $this->options['count_chromosomes']; $i++) {
                 $sum += $individual->getChromosomes()[$i] * $this->options['arguments'][$i];
             }
+            $sum = abs($sum - $this->options['condition']);
             $individual->setFitness($sum);
             $coff += $sum;
         }
@@ -72,9 +92,9 @@ class GeneticAlgorithm
     /**
      * Selection
      */
-    private function selection()
+    private function selection(): Population
     {
-        $indForSel = array_slice($this->population->getIndividuals(), 0, $this->options['count_population']);
+        $indForSel = array_slice($this->population->getIndividuals(), 0, $this->options['count_selection']);
         $newPopulation = new Population($this->options['count_population'], $this->options['count_chromosomes']);
         $newIndividuals = [];
         for ($i = 0; $i < $this->options['count_population']; $i++) {
@@ -88,21 +108,22 @@ class GeneticAlgorithm
             $newIndividuals[$i]->setChromosomes($arrayChromosomes);
         }
         $newPopulation->setIndividuals($newIndividuals);
-        $this->population = $newPopulation;
+        return $newPopulation;
     }
 
     /**
      * Mutation
      */
-    private function mutation(): bool
+    private function mutation(): Population
     {
+        $newPopulation = unserialize(serialize($this->population));
         for ($i = 0; $i < $this->options['count_mutation']; $i++) {
             $randomIndividual = rand(0, $this->options['count_population']-1);
             $randomChromosome = rand(0, $this->options['count_chromosomes']-1);
-            $arrayChromosomes = $this->population->getIndividuals()[$randomIndividual]->getChromosomes();
+            $arrayChromosomes = $newPopulation->getIndividuals()[$randomIndividual]->getChromosomes();
             $arrayChromosomes[$randomChromosome] = Individual::generateChromosome();
-            $this->population->getIndividuals()[$randomIndividual]->setChromosomes($arrayChromosomes);
+            $newPopulation->getIndividuals()[$randomIndividual]->setChromosomes($arrayChromosomes);
         }
-        return true;
+        return $newPopulation;
     }
 }
