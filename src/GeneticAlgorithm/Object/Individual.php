@@ -6,32 +6,25 @@ class Individual
 {
     /**
      * Fitness
-     *
-     * @var int
      */
-    protected $fitness;
+    protected float $fitness;
 
     /**
      * Array of chromosomes
      *
      * @var float[]
      */
-    protected $chromosomes = [];
+    protected array $chromosomes = [];
 
     /**
      * Count chromosomes
-     *
-     * @var int
      */
-    protected $countChromosomes;
+    protected int $countChromosomes;
 
     /**
      * Create new individual
-     *
-     * @param $autoGenerate bool
-     * @param $countChromosomes int
      */
-    public function __construct($countChromosomes, $autoGenerate=null)
+    public function __construct(int $countChromosomes, bool $autoGenerate=null)
     {
         $this->countChromosomes = $countChromosomes;
         if ($autoGenerate) {
@@ -41,13 +34,11 @@ class Individual
 
     /**
      * Method for auto generate chromosomes individual
-     *
-     * @return bool
      */
-    public function generateChromosomes()
+    public function generateChromosomes(): bool
     {
         for ($i = 0; $i < $this->countChromosomes; $i++) {
-            $chromosome = rand()/getrandmax();
+            $chromosome = self::generateChromosome();
             $this->chromosomes[] = $chromosome;
         }
         return true;
@@ -57,9 +48,8 @@ class Individual
      * Set array of chromosomes
      *
      * @param $arrayChromosomes float[]
-     * @return bool
      */
-    public function setChromosomes($arrayChromosomes)
+    public function setChromosomes(array $arrayChromosomes): bool
     {
         $this->chromosomes = $arrayChromosomes;
         return true;
@@ -70,18 +60,15 @@ class Individual
      *
      * @return float[]
      */
-    public function getChromosomes()
+    public function getChromosomes(): array
     {
         return $this->chromosomes;
     }
 
     /**
      * Set fitness
-     *
-     * @param $fitness float
-     * @return bool
      */
-    public function setFitness($fitness)
+    public function setFitness(float $fitness): bool
     {
         $this->fitness = $fitness;
         return true;
@@ -89,11 +76,17 @@ class Individual
 
     /**
      * Get fitness
-     *
-     * @return float
      */
-    public function getFitness()
+    public function getFitness(): float
     {
         return $this->fitness;
+    }
+
+    /**
+     * Generate chromosome
+     */
+    public static function generateChromosome(): float
+    {
+        return rand()/getrandmax();
     }
 }

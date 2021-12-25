@@ -9,28 +9,17 @@ class Population
      *
      * @var Individual[]
      */
-    protected $individuals = [];
+    protected array $individuals = [];
 
     /**
      * Count of individual
-     *
-     * @var int
      */
-    protected $countIndividual;
+    protected int $countIndividual;
 
     /**
-     * Count individual chromosomes
-     *
-     * @var int
+     * Generate population
      */
-    protected $countChromosomes;
-
-    /**
-     * @param $countIndividual int
-     * @param $countChromosomes int
-     * @param $autoGenerate bool
-     */
-    public function __construct($countIndividual, $countChromosomes, $autoGenerate=null)
+    public function __construct(int $countIndividual, int $countChromosomes, bool $autoGenerate=null)
     {
         $this->countIndividual = $countIndividual;
         if ($autoGenerate) {
@@ -43,11 +32,9 @@ class Population
 
     /**
      * Set individuals in population
-     *
-     * @param $arrayIndividuals Individual[]
-     * @return bool
      */
-    public function setIndividuals($arrayIndividuals) {
+    public function setIndividuals(array $arrayIndividuals): bool
+    {
         $this->individuals = $arrayIndividuals;
         return true;
     }
@@ -57,7 +44,7 @@ class Population
      *
      * @return array Individual
      */
-    public function getIndividuals()
+    public function getIndividuals(): array
     {
         return $this->individuals;
     }
