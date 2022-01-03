@@ -45,11 +45,12 @@ class GeneticAlgorithm
      * Start genetic algorithm
      *
      * @return bool
+     * @throws Exception\PopulationException
      */
-    public function run(): bool
+    public function run()
     {
         // Generate new population
-        $this->population = new Population($this->options['count_population'], $this->options['count_chromosomes'], true);
+        $this->population = new Population($this->options['count_population'], $this->options['count_chromosomes'], $this->options['min_chromosome'], $this->options['max_chromosome']);
 
         // Counter generation
         $currentGeneration = 0;
@@ -62,7 +63,13 @@ class GeneticAlgorithm
             $this->population = $this->mutation();
         }
 
-        return true;
+        $this->fitness();
+        $this->population->sortByFitness();
+        $sum = 0;
+        for ($i = 0; $i < $this->options['count_chromosomes']; $i++) {
+            $sum += $this->population->getIndividuals()[0]->getChromosomes()[$i] * $this->options['arguments'][$i];
+        }
+        return $sum;
     }
 
     /**
@@ -89,6 +96,7 @@ class GeneticAlgorithm
      * Selection
      *
      * @return Population
+     * @throws Exception\PopulationException
      */
     private function selection(): Population
     {
@@ -121,7 +129,7 @@ class GeneticAlgorithm
             $randomIndividual = rand(0, $this->options['count_population']-1);
             $randomChromosome = rand(0, $this->options['count_chromosomes']-1);
             $arrayChromosomes = $newPopulation->getIndividuals()[$randomIndividual]->getChromosomes();
-            $arrayChromosomes[$randomChromosome] = Individual::generateChromosome();
+            $arrayChromosomes[$randomChromosome] = Individual::generateChromosome($this->options['min_chromosome'], $this->options['max_chromosome']);
             $newPopulation->getIndividuals()[$randomIndividual]->setChromosomes($arrayChromosomes);
         }
         return $newPopulation;

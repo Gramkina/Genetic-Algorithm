@@ -5,49 +5,38 @@ namespace Gramk\GeneticAlgorithm\Object;
 class Individual
 {
     /**
-     * Fitness
+     * @var float Fitness
      */
     protected float $fitness;
 
     /**
-     * Array of chromosomes
-     *
-     * @var float[]
+     * @var float[] Array of chromosomes
      */
     protected array $chromosomes = [];
 
     /**
-     * Count chromosomes
+     * Autogenerate chromosomes
+     *
+     * @param int $countChromosomes Count of chromosomes in one individual
+     * @param float $min Min value chromosome
+     * @param float $max Max value chromosome
+     *
+     * @return void
      */
-    protected int $countChromosomes;
-
-    /**
-     * Create new individual
-     */
-    public function __construct(int $countChromosomes, bool $autoGenerate=null)
+    public function autogenerateChromosomes(int $countChromosomes, float $min, float $max)
     {
-        $this->countChromosomes = $countChromosomes;
-        if ($autoGenerate) {
-            $this->generateChromosomes();
-        }
-    }
-
-    /**
-     * Method for auto generate chromosomes individual
-     */
-    public function generateChromosomes(): bool
-    {
-        for ($i = 0; $i < $this->countChromosomes; $i++) {
-            $chromosome = self::generateChromosome();
+        for ($i = 0; $i < $countChromosomes; $i++) {
+            $chromosome = self::generateChromosome($min, $max);
             $this->chromosomes[] = $chromosome;
         }
-        return true;
     }
 
     /**
      * Set array of chromosomes
      *
-     * @param $arrayChromosomes float[]
+     * @param float[] $arrayChromosomes Array containing chromosomes
+     *
+     * @return bool
      */
     public function setChromosomes(array $arrayChromosomes): bool
     {
@@ -58,7 +47,7 @@ class Individual
     /**
      * Get individual chromosomes
      *
-     * @return float[]
+     * @return float[] Array of chromosomes
      */
     public function getChromosomes(): array
     {
@@ -67,6 +56,10 @@ class Individual
 
     /**
      * Set fitness
+     *
+     * @param float $fitness Fitness value
+     *
+     * @return bool
      */
     public function setFitness(float $fitness): bool
     {
@@ -76,6 +69,8 @@ class Individual
 
     /**
      * Get fitness
+     *
+     * @return float Return fitness value
      */
     public function getFitness(): float
     {
@@ -84,9 +79,14 @@ class Individual
 
     /**
      * Generate chromosome
+     *
+     * @param float $min Min value chromosome
+     * @param float $max Max value chromosome
+     *
+     * @return float Return generated chromosome
      */
-    public static function generateChromosome(): float
+    public static function generateChromosome(float $min, float $max): float
     {
-        return rand()/getrandmax();
+        return rand($min, $max-1)+rand()/getrandmax();
     }
 }

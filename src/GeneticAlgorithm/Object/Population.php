@@ -2,31 +2,35 @@
 
 namespace Gramk\GeneticAlgorithm\Object;
 
+use Gramk\GeneticAlgorithm\Exception\PopulationException;
+
 class Population
 {
     /**
-     * Individuals
-     *
-     * @var Individual[]
+     * @var Individual[] Individuals
      */
     protected array $individuals = [];
 
     /**
-     * Count of individual
-     */
-    protected int $countIndividual;
-
-    /**
      * Generate population
+     *
+     * @param int $countIndividual Count individuals in population
+     * @param int $countChromosomes Count chromosomes in individual
+     * @param float|null $min Min value chromosome
+     * @param float|null $max Max value chromosome
+     *
+     * @throws PopulationException
      */
-    public function __construct(int $countIndividual, int $countChromosomes, bool $autoGenerate=null)
+    public function __construct(int $countIndividual, int $countChromosomes, float $min = null, float $max = null)
     {
-        $this->countIndividual = $countIndividual;
-        if ($autoGenerate) {
+        if ($min && $max) {
             for ($i = 0; $i < $countIndividual; $i++) {
-                $individual = new Individual($countChromosomes, true);
+                $individual = new Individual();
+                $individual->autogenerateChromosomes($countChromosomes, $min, $max);
                 $this->individuals[] = $individual;
             }
+        } elseif (($min && !$max) || (!$min && $max)) {
+            throw new PopulationException(PopulationException::THROW_RANDOM_RANGE);
         }
     }
 
@@ -39,6 +43,10 @@ class Population
 
     /**
      * Set individuals in population
+     *
+     * @param array $arrayIndividuals Array of individuals
+     *
+     * @return bool
      */
     public function setIndividuals(array $arrayIndividuals): bool
     {
