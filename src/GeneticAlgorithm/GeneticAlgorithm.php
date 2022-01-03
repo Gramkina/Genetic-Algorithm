@@ -9,21 +9,23 @@ use Gramk\GeneticAlgorithm\Object\Population;
 class GeneticAlgorithm
 {
     /**
-     * Population
+     * Population in genetic algorithm
      */
     protected Population $population;
 
     /**
-     * Parameters
+     * Parameters in genetic algorithm
      */
     protected array $options;
 
     /**
      * Set parameters genetic algorithm
      *
+     * @param array $options
+     * @return bool
      * @throws Exception
      */
-    public function setParameters(array $options)
+    public function setParameters(array $options): bool
     {
         if ($options['count_chromosomes'] &&
             $options['count_population'] &&
@@ -33,16 +35,18 @@ class GeneticAlgorithm
             $options['generations'] &&
             $options['count_selection']) {
             $this->options = $options;
+            return true;
         } else {
             throw new Exception();
         }
-
     }
 
     /**
      * Start genetic algorithm
+     *
+     * @return bool
      */
-    public function run(): float
+    public function run(): bool
     {
         // Generate new population
         $this->population = new Population($this->options['count_population'], $this->options['count_chromosomes'], true);
@@ -58,15 +62,7 @@ class GeneticAlgorithm
             $this->population = $this->mutation();
         }
 
-        // Result
-        $this->fitness();
-        $this->population->sortByFitness();
-        $chromosomes = $this->population->getIndividuals()[0]->getChromosomes();
-        $result = 0;
-        for ($i = 0; $i < $this->options['count_chromosomes']; $i++) {
-            $result += $chromosomes[$i] * $this->options['arguments'][$i];
-        }
-        return $result;
+        return true;
     }
 
     /**
@@ -91,6 +87,8 @@ class GeneticAlgorithm
 
     /**
      * Selection
+     *
+     * @return Population
      */
     private function selection(): Population
     {
@@ -113,10 +111,12 @@ class GeneticAlgorithm
 
     /**
      * Mutation
+     *
+     * @return Population
      */
     private function mutation(): Population
     {
-        $newPopulation = unserialize(serialize($this->population));
+        $newPopulation = clone $this->population;
         for ($i = 0; $i < $this->options['count_mutation']; $i++) {
             $randomIndividual = rand(0, $this->options['count_population']-1);
             $randomChromosome = rand(0, $this->options['count_chromosomes']-1);

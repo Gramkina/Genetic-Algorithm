@@ -30,6 +30,13 @@ class Population
         }
     }
 
+    public function __clone(): void
+    {
+        $this->individuals = array_map(function ($object) {
+            return clone $object;
+        }, $this->individuals);
+    }
+
     /**
      * Set individuals in population
      */
