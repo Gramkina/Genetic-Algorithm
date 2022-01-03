@@ -2,7 +2,7 @@
 
 namespace Gramk\GeneticAlgorithm;
 
-use Exception;
+use Gramk\GeneticAlgorithm\Exception\ParametersException;
 use Gramk\GeneticAlgorithm\Object\Individual;
 use Gramk\GeneticAlgorithm\Object\Population;
 
@@ -23,7 +23,7 @@ class GeneticAlgorithm
      *
      * @param array $options
      * @return bool
-     * @throws Exception
+     * @throws ParametersException
      */
     public function setParameters(array $options): bool
     {
@@ -37,7 +37,7 @@ class GeneticAlgorithm
             $this->options = $options;
             return true;
         } else {
-            throw new Exception();
+            throw new ParametersException();
         }
     }
 
